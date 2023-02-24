@@ -1,0 +1,36 @@
+.form {
+  border: 1px solid;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.textField {
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 7px;
+}
+
+.label {
+  font-weight: 500;
+}
+
+.btn {
+  background-color: rgb(214, 206, 206);
+  border: 1px solid;
+  border-radius: 8px;
+  width: 100px;
+  height: 30px;
+
+  &:hover,
+  &:focus {
+    background-color: rgb(126, 193, 119);
+  }
+}

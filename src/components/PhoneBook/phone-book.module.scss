@@ -1,0 +1,28 @@
+.wrapper {
+  margin: 50px auto;
+  padding: 0 0 35px 0;
+  max-width: 500px;
+  border: 1px solid;
+  border-radius: 10px;
+  background-color: rgb(204, 199, 199);
+}
+
+.title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 25px;
+  margin-bottom: 15px;
+  text-decoration: underline;
+}
+
+.label {
+  font-weight: 500;
+}
+
+.textField {
+  width: 200px;
+  padding: 5px;
+  border: 1px solid;
+  border-radius: 5px;
+  margin-left: 15px;
+}
