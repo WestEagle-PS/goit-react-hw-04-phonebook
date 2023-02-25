@@ -1,62 +1,50 @@
 import { nanoid } from 'nanoid';
-import { Component } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PhoneBlock from './PhoneBlock/PhoneBlock';
 import ContactList from './ContactList/ContactList';
 import ContactForm from './ContactForm/ContactForm';
 import css from './phone-book.module.scss';
 
-class PhoneBook extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
-
-  componentDidMount() {
+const PhoneBook = () => {
+  const [contacts, setContacts] = useState(() => {
     const contacts = JSON.parse(localStorage.getItem('book-contacts'));
+    return contacts?.length ? contacts : [];
+  });
 
-    if (contacts?.length) {
-      //contacts && contacts.length
-      this.setState({
-        contacts,
-      });
+  const [filter, setFilter] = useState('');
+
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
     }
-  }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { contacts } = this.state;
-    if (contacts.length !== prevState.contacts.length) {
-      localStorage.setItem('book-contacts', JSON.stringify(contacts));
-    }
-  }
+    localStorage.setItem('book-contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-  onAddContacts = ({ name, number }) => {
-    if (this.isDublicate({ name, number })) {
+  const onAddContacts = ({ name, number }) => {
+    if (isDublicate({ name, number })) {
       return alert(`${name} ${number} is already in contacts`);
     }
 
-    this.setState(prevState => {
-      const { contacts } = prevState;
+    setContacts(prevContacts => {
       const newPhone = {
         id: nanoid(),
         name,
         number,
       };
 
-      return { contacts: [...contacts, newPhone] };
+      return [...prevContacts, newPhone];
     });
   };
 
-  onDeleteNumber = id => {
-    this.setState(prevState => {
-      const newContacts = prevState.contacts.filter(item => item.id !== id);
-      return {
-        contacts: newContacts,
-      };
-    });
+  const onDeleteNumber = id => {
+    setContacts(prevContacts => prevContacts.filter(item => item.id !== id));
   };
 
-  isDublicate({ name, number }) {
-    const { contacts } = this.state;
+  const isDublicate = ({ name, number }) => {
     const normalizedName = name.toLowerCase();
     const dublicate = contacts.find(contact => {
       return (
@@ -66,11 +54,9 @@ class PhoneBook extends Component {
     });
 
     return Boolean(dublicate);
-  }
+  };
 
-  getFilteredNumbers() {
-    const { contacts, filter } = this.state;
-
+  const getFilteredNumbers = () => {
     if (!filter) {
       return contacts;
     }
@@ -83,36 +69,36 @@ class PhoneBook extends Component {
     });
 
     return result;
-  }
-
-  handleFilterChange = e => {
-    const { value } = e.target;
-    this.setState({ filter: value });
   };
 
-  render() {
-    const { onAddContacts, onDeleteNumber } = this;
-    const contacts = this.getFilteredNumbers();
+  const handleFilterChange = e => {
+    const { value } = e.target;
+    setFilter(value);
+  };
 
-    return (
-      <div className={css.wrapper}>
-        <h2 className={css.title}>My Phonebook</h2>
-        <PhoneBlock title="Phonebook">
-          <ContactForm onSubmit={onAddContacts} />
-        </PhoneBlock>
-        <PhoneBlock title="Contacts">
-          <label className={css.label}>Find contacts by name:</label>
-          <input
-            onChange={this.handleFilterChange}
-            className={css.textField}
-            name="filter"
-            value={this.state.filter}
-          />
-          <ContactList contacts={contacts} onDeleteNumber={onDeleteNumber} />
-        </PhoneBlock>
-      </div>
-    );
-  }
-}
+  const contactsFiltered = getFilteredNumbers();
+
+  return (
+    <div className={css.wrapper}>
+      <h2 className={css.title}>My Phonebook</h2>
+      <PhoneBlock title="Phonebook">
+        <ContactForm onSubmit={onAddContacts} />
+      </PhoneBlock>
+      <PhoneBlock title="Contacts">
+        <label className={css.label}>Find contacts by name:</label>
+        <input
+          onChange={handleFilterChange}
+          className={css.textField}
+          name="filter"
+          value={filter}
+        />
+        <ContactList
+          contacts={contactsFiltered}
+          onDeleteNumber={onDeleteNumber}
+        />
+      </PhoneBlock>
+    </div>
+  );
+};
 
 export default PhoneBook;
