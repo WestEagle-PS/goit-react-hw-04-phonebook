@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PhoneBlock from './PhoneBlock/PhoneBlock';
 import ContactList from './ContactList/ContactList';
 import ContactForm from './ContactForm/ContactForm';
@@ -24,7 +24,7 @@ const PhoneBook = () => {
     localStorage.setItem('book-contacts', JSON.stringify(contacts));
   }, [contacts]);
 
-  const onAddContacts = useCallback(({ name, number }) => {
+  const onAddContacts = ({ name, number }) => {
     if (isDublicate({ name, number })) {
       return alert(`${name} ${number} is already in contacts`);
     }
@@ -38,7 +38,7 @@ const PhoneBook = () => {
 
       return [...prevContacts, newPhone];
     });
-  }, []);
+  };
 
   const onDeleteNumber = id => {
     setContacts(prevContacts => prevContacts.filter(item => item.id !== id));
