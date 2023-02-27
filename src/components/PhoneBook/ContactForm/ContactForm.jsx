@@ -8,8 +8,6 @@ const ContactForm = ({ onSubmit }) => {
     number: '',
   });
 
-  console.log('render');
-
   const inputNameRef = useRef();
 
   useEffect(() => {
